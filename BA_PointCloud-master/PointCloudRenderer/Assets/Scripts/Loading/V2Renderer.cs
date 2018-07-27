@@ -27,8 +27,8 @@ namespace Loading {
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
 
-        private GameObject pointsHolder = GameObject.FindGameObjectWithTag("Holder");
-
+        
+        
         /// <summary>
         /// Creates a new V2Renderer and starts all the threads
         /// </summary>
@@ -104,16 +104,7 @@ namespace Loading {
                 Node n = toRender.Dequeue();
                 lock (n) {
                     if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
-                        //store original roientation of container
-                        Quaternion orientation = pointsHolder.transform.rotation;
-                        //refresh container orientation to 0,0,0 before resetting to old orientation
-                        pointsHolder.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
-
-                        //create the new game object from node
                         n.CreateGameObjects(config);
-
-                        //restore orientation to maintain rotation
-                        pointsHolder.transform.rotation = orientation;
                     }
                 }
             }

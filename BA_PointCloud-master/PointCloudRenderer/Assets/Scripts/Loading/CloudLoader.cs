@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using UnityEngine;
 
+
 namespace Loading {
     /// <summary>
     /// Provides methods for loading point clouds from the file system
@@ -12,11 +13,13 @@ namespace Loading {
     class CloudLoader {
         /* Loads the metadata from the json-file in the given cloudpath
          */
-         /// <summary>
-         /// Loads the meta data from the json-file in the given cloudpath. Attributes "cloudPath", and "cloudName" are set as well.
-         /// </summary>
-         /// <param name="cloudPath">Folderpath of the cloud</param>
-         /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
+        /// <summary>
+        /// Loads the meta data from the json-file in the given cloudpath. Attributes "cloudPath", and "cloudName" are set as well.
+        /// </summary>
+        /// <param name="cloudPath">Folderpath of the cloud</param>
+        /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
+
+        
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
             using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {

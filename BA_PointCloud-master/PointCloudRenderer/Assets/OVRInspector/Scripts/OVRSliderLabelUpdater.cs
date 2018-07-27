@@ -35,13 +35,22 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
     public Slider slider;
     public bool setLabelAtStart = true;
 
+    public static float xrot = 0, yrot = 0, zrot = 0;
+
     static GeoQuadMeshConfiguration test;
+
+    private GameObject player;
+    public static Transform playertransform;
 
     public GameObject meshconfig, pointsHolder;
 
 
 	// Use this for initialization
 	void Start () {
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        playertransform = player.transform;
+
         if (setLabelAtStart)
             SetValue(slider.value);
         test = meshconfig.GetComponent<GeoQuadMeshConfiguration>();
@@ -70,10 +79,10 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
     {
         if (sliderValueField != null)
             sliderValueField.text = string.Format("{0:0.00}", v);
+
+        xrot = slider.value;
         
-        pointsHolder.transform.rotation = Quaternion.Euler(new Vector3(slider.value, pointsHolder.transform.eulerAngles.y,
-           pointsHolder.transform.eulerAngles.z));
-        
+
     }
 
     public void SetYRotValue(float v)
@@ -81,8 +90,7 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
         if (sliderValueField != null)
             sliderValueField.text = string.Format("{0:0.00}", v);
 
-        pointsHolder.transform.rotation = Quaternion.Euler(new Vector3(pointsHolder.transform.eulerAngles.x,
-           slider.value, pointsHolder.transform.eulerAngles.z));
+        yrot = slider.value;
 
     }
 
@@ -91,8 +99,13 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
         if (sliderValueField != null)
             sliderValueField.text = string.Format("{0:0.00}", v);
 
-        pointsHolder.transform.rotation = Quaternion.Euler(new Vector3(pointsHolder.transform.eulerAngles.x,
-           pointsHolder.transform.eulerAngles.y, slider.value));
+        zrot = slider.value;
+    }
+    public void SetSpeed(float v)
+    {
+        if (sliderValueField != null)
+            sliderValueField.text = string.Format("{0:0.00}", v);
 
+        OVRController.speed = slider.value;
     }
 }

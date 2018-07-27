@@ -10,8 +10,6 @@ public class VRSlider : MonoBehaviour {
     public Image backgroundImage;
     public Color normalColor, highlightColor;
 
-    public GameObject obj;
-    
     // Use this for initialization
     void Start () {
 		
