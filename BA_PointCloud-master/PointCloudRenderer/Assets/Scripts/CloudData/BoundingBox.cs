@@ -27,13 +27,39 @@ namespace CloudData {
         /// </summary>
         public double ux;
         /// <summary>
-        /// Upper Y-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// Moved Upper Y-Coordinate. Do not set manually after constructing! Use the property instead!
         /// </summary>
         public double uy;
         /// <summary>
-        /// Upper Z-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// Moved Upper Z-Coordinate. Do not set manually after constructing! Use the property instead!
         /// </summary>
         public double uz;
+
+        /// <summary>
+        /// Original Lower X-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double olx;
+        /// <summary>
+        /// Original Lower Y-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double oly;
+        /// <summary>
+        /// Original Lower Z-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double olz;
+        /// <summary>
+        /// Original Upper X-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double oux;
+        /// <summary>
+        /// Original Upper Y-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double ouy;
+        /// <summary>
+        /// Original Upper Z-Coordinate. Do not set manually after constructing! Use the property instead!
+        /// </summary>
+        public double ouz;
+        public int flag = 0;
 
         //Bounds-Object (Unity-Float-Bounding-Box, used in culling)
         private Bounds bounds;
@@ -242,6 +268,23 @@ namespace CloudData {
                 bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
             }
         }
+        public void UpdateBox(Vector3 vector)
+        {
+            if (flag == 0)
+            {
+                olx = lx;
+                oly = ly;
+                olz = lz;
+                oux = ux;
+                ouy = uy;
+                ouz = uz;
+                flag = 1;
+            }
+            double nlx = olx + vector.x;
+            if (nlx != lx)
+            {
+                MoveAlong(new Vector3d(vector));
+            }
+        }
     }
-
 }

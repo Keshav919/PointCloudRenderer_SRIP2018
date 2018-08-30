@@ -193,9 +193,13 @@ namespace ObjectCreation {
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
 
             //Set Translation
+            boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
-            gameObject.transform.Translate(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
-
+            //gameObject.transform.Translate(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
+            //boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
+            /*if (name.Contains("potreeConverted_S0"))
+            Debug.Log(name + " " + boundingBox.ToString());
+            */
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);
             }
