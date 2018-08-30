@@ -18,7 +18,7 @@ namespace Loading {
         /// </summary>
         /// <param name="cloudPath">Folderpath of the cloud</param>
         /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
-
+        public static Node currentNode;
         
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
@@ -60,9 +60,12 @@ namespace Loading {
         /// <summary>
         /// Loads the points for the given node
         /// </summary>
-        public static void LoadPointsForNode(Node node) {
+        public static void LoadPointsForNode(Node node)
+        {
             string dataRPath = node.MetaData.cloudPath + node.MetaData.octreeDir + "\\r\\";
+            currentNode = node;
             LoadPoints(dataRPath, node.MetaData, node);
+
         }
 
         /* Loads the complete hierarchy of the given node. Creates all the children and their data. Points are not yet stored in there.
@@ -135,7 +138,7 @@ namespace Loading {
             int pointByteSize = 16;//TODO: Is this always the case?
             int numPoints = data.Length / pointByteSize;
             int offset = 0;
-
+            
             Vector3[] vertices = new Vector3[numPoints];
             Color[] colors = new Color[numPoints];
             //Read in data

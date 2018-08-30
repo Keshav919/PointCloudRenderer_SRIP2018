@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using CloudData;
 using ObjectCreation;
 
-public class VRSlider : MonoBehaviour {
+public class MenuHighlight : MonoBehaviour {
 
     public Image backgroundImage;
     public Color normalColor, highlightColor;

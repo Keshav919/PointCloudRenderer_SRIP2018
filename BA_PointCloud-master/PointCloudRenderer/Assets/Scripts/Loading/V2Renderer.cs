@@ -27,8 +27,9 @@ namespace Loading {
         private Queue<Node> toRender;
         private Queue<Node> toDelete;
 
+        public static List<GameObject> holders;
         
-        
+
         /// <summary>
         /// Creates a new V2Renderer and starts all the threads
         /// </summary>
@@ -41,13 +42,15 @@ namespace Loading {
         /// <param name="cacheSize">Size of cache in points</param>
         public V2Renderer(int minNodeSize, uint pointBudget, uint nodesLoadedPerFrame, uint nodesGOsperFrame, Camera camera, MeshConfiguration config, uint cacheSize) {
             rootNodes = new List<Node>();
+            holders = GameObject.FindGameObjectWithTag("MeshConfig").GetComponent<GeoQuadMeshConfiguration>().holders;
             this.camera = camera;
             this.config = config;
             cache = new V2Cache(cacheSize);
-            loadingThread = new V2LoadingThread(cache);
+            loadingThread = new V2LoadingThread(cache, holders);
             loadingThread.Start();
             traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
             traversalThread.Start();
+            
         }
 
         /// <summary>
@@ -92,6 +95,7 @@ namespace Loading {
                 return;
             }
             while (toDelete.Count != 0) {
+                
                 Node n = toDelete.Dequeue();
                 lock (n) {
                     if (n.HasGameObjects()) {
@@ -102,8 +106,11 @@ namespace Loading {
             }
             while (toRender.Count != 0) {
                 Node n = toRender.Dequeue();
+                
                 lock (n) {
+                    
                     if (n.HasPointsToRender() && (n.Parent == null || n.Parent.HasGameObjects())) {
+
                         n.CreateGameObjects(config);
                     }
                 }

@@ -34,27 +34,29 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
     public Text sliderValueField;
     public Slider slider;
     public bool setLabelAtStart = true;
-
-    public static float xrot = 0, yrot = 0, zrot = 0;
-
-    static GeoQuadMeshConfiguration test;
-
     private GameObject player;
-    public static Transform playertransform;
 
-    public GameObject meshconfig, pointsHolder;
+    public static float xrot, yrot, zrot;
+
+    private static GeoQuadMeshConfiguration mesh;
+    
+
+    private GameObject meshconfig;
 
 
 	// Use this for initialization
 	void Start () {
 
+        meshconfig = GameObject.FindGameObjectWithTag("MeshConfig");
         player = GameObject.FindGameObjectWithTag("Player");
-        playertransform = player.transform;
+        xrot = player.transform.eulerAngles.x;
+        yrot = player.transform.eulerAngles.y;
+        zrot = player.transform.eulerAngles.z;
 
         if (setLabelAtStart)
             SetValue(slider.value);
-        test = meshconfig.GetComponent<GeoQuadMeshConfiguration>();
-        test.reload = true;
+        mesh = meshconfig.GetComponent<GeoQuadMeshConfiguration>();
+        mesh.reload = true;
     }
 
     /*
@@ -72,8 +74,8 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
         if (sliderValueField != null)
             sliderValueField.text = string.Format("{0:0.00}", v);
         
-        test.pointRadius = slider.value;
-        test.reload = true;
+        mesh.pointRadius = slider.value;
+        mesh.reload = true;
     }
     public void SetXRotValue(float v)
     {

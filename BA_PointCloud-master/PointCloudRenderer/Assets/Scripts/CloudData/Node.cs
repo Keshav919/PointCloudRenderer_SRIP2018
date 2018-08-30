@@ -61,6 +61,7 @@ namespace CloudData {
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
         public void CreateGameObjects(MeshConfiguration configuration) {
             int max = configuration.GetMaximumPointsPerMesh();
+            
             if (verticesToStore.Length <= max) {
                 gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox));
             } else {

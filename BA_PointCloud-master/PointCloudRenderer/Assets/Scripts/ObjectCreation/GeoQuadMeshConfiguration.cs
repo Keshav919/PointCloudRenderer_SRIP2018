@@ -74,6 +74,9 @@ namespace ObjectCreation {
         /// </summary>
         public bool reload = false;
 
+        public List<GameObject> holders;
+
+
         private Material material;
         private Camera mainCamera;
         private HashSet<GameObject> gameObjectCollection = null;
@@ -122,8 +125,15 @@ namespace ObjectCreation {
             if (reloadingPossible) {
                 gameObjectCollection = new HashSet<GameObject>();
             }
+
+            holders = new List<GameObject>();
             LoadShaders();
             mainCamera = Camera.main;
+            Transform[] ts = GameObject.FindGameObjectWithTag("Holder").transform.GetComponentsInChildren<Transform>();
+            foreach (Transform child in ts)
+            {
+                holders.Add(child.gameObject);
+            }
         }
 
         public void Update() {
@@ -148,8 +158,23 @@ namespace ObjectCreation {
 
         public override GameObject CreateGameObject(string name, Vector3[] vertexData, Color[] colorData, BoundingBox boundingBox) {
             GameObject gameObject = new GameObject(name);
-            gameObject.transform.parent = GameObject.Find("Points Holder").transform;
 
+            //keep the heirarchy clean by creating the game objects in the proper place
+            if (holders.Count > 1)
+            {
+                foreach (GameObject child in holders)
+                {
+                    if (name.Contains(child.name))
+                    {
+                        gameObject.transform.parent = child.transform;
+                    }
+                }
+            }
+            else
+            {
+                gameObject.transform.parent = GameObject.Find("Points Holder").transform;
+            }
+            
             Mesh mesh = new Mesh();
 
             MeshFilter filter = gameObject.AddComponent<MeshFilter>();
@@ -169,6 +194,7 @@ namespace ObjectCreation {
 
             //Set Translation
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            gameObject.transform.Translate(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
 
             if (gameObjectCollection != null) {
                 gameObjectCollection.Add(gameObject);

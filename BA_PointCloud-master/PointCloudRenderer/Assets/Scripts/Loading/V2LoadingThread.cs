@@ -17,32 +17,44 @@ namespace Loading {
         private ThreadSafeQueue<Node> loadingQueue;
         private bool running = true;
         private V2Cache cache;
+        public static List<GameObject> holders;
         
-        public V2LoadingThread(V2Cache cache) {
+        public V2LoadingThread(V2Cache cache, List<GameObject> container) {
             loadingQueue = new ThreadSafeQueue<Node>();
             this.cache = cache;
+            holders = container;
         }
 
         public void Start() {
             new Thread(Run).Start();
+            
         }
 
         private void Run() {
-            try {
-                while (running) {
+            try
+            {
+                while (running)
+                {
                     Node n;
-                    if (loadingQueue.TryDequeue(out n)) {
+                    if (loadingQueue.TryDequeue(out n))
+                    {
                         Monitor.Enter(n);
-                        if (!n.HasPointsToRender() && !n.HasGameObjects()) {
+                        if (!n.HasPointsToRender() && !n.HasGameObjects())
+                        {
                             Monitor.Exit(n);
+                            
                             CloudLoader.LoadPointsForNode(n);
                             cache.Insert(n);
-                        } else {
+                        }
+                        else
+                        {
                             Monitor.Exit(n);
                         }
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 Debug.LogError(ex);
             }
             Debug.Log("Loading Thread stopped");
