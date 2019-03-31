@@ -169,6 +169,7 @@ namespace ObjectCreation {
                         gameObject.transform.parent = child.transform;
                     }
                 }
+                boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
             }
             else
             {
@@ -193,7 +194,7 @@ namespace ObjectCreation {
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
 
             //Set Translation
-            boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
+            
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
             //gameObject.transform.Translate(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
             //boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
