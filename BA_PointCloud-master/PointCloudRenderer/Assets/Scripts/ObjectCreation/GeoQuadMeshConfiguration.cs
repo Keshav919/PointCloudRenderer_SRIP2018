@@ -89,6 +89,8 @@ namespace ObjectCreation
 
         public List<GameObject> holders;
 
+        public Material[] Newmat;
+
         //public Vector3[] rotatepoints;
 
         //public GameObject Cloudholder;
@@ -103,9 +105,10 @@ namespace ObjectCreation
 
         private void LoadShaders()
         {
+
             if (interpolation == InterpolationMode.OFF)
             {
-                if (screenSize)
+                if (screenSize )
                 {
                     material = new Material(Shader.Find("Custom/QuadGeoScreenSizeShader"));
                 }
@@ -162,7 +165,11 @@ namespace ObjectCreation
             Debug.Log("Initial rotatepoints[0]" + rotatepoints[0]);
             Debug.Log("Initial rotatepoints[1]" + rotatepoints[1]);
             Debug.Log("Initial rotatepoints[2]" + rotatepoints[2]);*/
-            
+
+            GameObject OutlineController = GameObject.Find("OutlineController");
+            HighlightController HighlightController = OutlineController.GetComponent<HighlightController>();
+            Newmat = HighlightController.Newmat;
+
             if (reloadingPossible)
             {
                 gameObjectCollection = new HashSet<GameObject>();
@@ -232,6 +239,13 @@ namespace ObjectCreation
             renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows = false;
             renderer.material = material;
+
+            //Create a highlight
+            if (gameObject.GetComponentInParent<DrawOutline>().reloaded == true)
+            {
+                Newmat[0] = renderer.material;
+                renderer.materials = Newmat;
+            }
 
             int[] indecies = new int[vertexData.Length];
             for (int i = 0; i < vertexData.Length; ++i)

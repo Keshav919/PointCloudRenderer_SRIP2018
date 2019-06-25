@@ -34,7 +34,8 @@ namespace Controllers {
                 GameObject holder = new GameObject(sub.Name);
                 //gameObject.tag = filename;
                 holder.transform.parent = GameObject.FindGameObjectWithTag("Holder").transform;
-                //holder.AddComponent<Rotate>();
+                holder.AddComponent<DrawOutline>();
+                holder.AddComponent<MaintainView>();
 
                 DynamicLoaderController loader = go.AddComponent<DynamicLoaderController>();
                 loader.cloudPath = sub.FullName;
