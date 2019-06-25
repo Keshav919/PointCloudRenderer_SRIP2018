@@ -20,14 +20,12 @@ public class PotreeConverter : MonoBehaviour
         loader = GameObject.FindGameObjectWithTag("Loader");
         cont = loader.GetComponent<DynamicLoaderController>();
 
-        output = output + "_S" + spacing;
+       // output = output + "_S" + spacing;
 
         try
         {
             Process myProcess = new Process();
-            myProcess.StartInfo.FileName = "C:\\dev\\workspaces\\PotreeConverter\\master\\"
-                + "PotreeConverter_1.6_windows_x64\\PotreeConverter_1.6_windows_x64\\"
-                + "PotreeConverter.exe";
+            myProcess.StartInfo.FileName = "C:\\Users\\David\\Desktop\\PotreeConverter_1.6_2018_07_29_windows_x64\\PotreeConverter.exe";
 
             myProcess.StartInfo.Arguments = "/c" + "-i " + input + " -o " + output + " -s " + spacing;
 

@@ -19,19 +19,22 @@ namespace Controllers {
         /// </summary>
         public AbstractPointSetController pointset;
 
-        
+        public string filename;
+
+
         void Start() {
             DirectoryInfo dir = new DirectoryInfo(path);
             foreach (DirectoryInfo sub in dir.GetDirectories()) {
                 GameObject go = new GameObject(sub.Name);
-
+                filename = sub.Name;
                 //store the loaders in the proper game object
                 go.transform.parent = GameObject.FindGameObjectWithTag("Directories").transform;
                 
                 //create a holder for the point clouds and store the point clouds in them
                 GameObject holder = new GameObject(sub.Name);
+                //gameObject.tag = filename;
                 holder.transform.parent = GameObject.FindGameObjectWithTag("Holder").transform;
-                holder.AddComponent<CloudOffset>();
+                //holder.AddComponent<Rotate>();
 
                 DynamicLoaderController loader = go.AddComponent<DynamicLoaderController>();
                 loader.cloudPath = sub.FullName;
