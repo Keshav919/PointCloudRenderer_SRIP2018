@@ -33,7 +33,6 @@ public class MenuControl : MonoBehaviour {
         if (OVRInput.GetDown(OVRInput.Button.Two) || Input.GetKeyDown(KeyCode.M))
         {
             hide = !hide;
-            Debug.Log("Pressed");
         }
 
         menu.SetActive(!hide);

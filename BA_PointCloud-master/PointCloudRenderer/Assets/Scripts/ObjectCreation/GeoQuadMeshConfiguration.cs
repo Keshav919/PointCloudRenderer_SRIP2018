@@ -1,9 +1,11 @@
 ﻿using CloudData;
+using Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using System.IO;
 
 namespace ObjectCreation
 {
@@ -91,11 +93,12 @@ namespace ObjectCreation
 
         public Material[] Newmat;
 
+        public static Dictionary<string, Vector3> boxlist = new Dictionary<string, Vector3>();
+
         //public Vector3[] rotatepoints;
 
         //public GameObject Cloudholder;
 
-        public bool RotateSwitch;
 
         public GameObject subholder;
 
@@ -161,10 +164,6 @@ namespace ObjectCreation
 
         public void Start()
         {
-            /*rotatepoints = new Vector3[3];
-            Debug.Log("Initial rotatepoints[0]" + rotatepoints[0]);
-            Debug.Log("Initial rotatepoints[1]" + rotatepoints[1]);
-            Debug.Log("Initial rotatepoints[2]" + rotatepoints[2]);*/
 
             GameObject OutlineController = GameObject.Find("OutlineController");
             HighlightController HighlightController = OutlineController.GetComponent<HighlightController>();
@@ -174,6 +173,26 @@ namespace ObjectCreation
             {
                 gameObjectCollection = new HashSet<GameObject>();
             }
+
+            GameObject directory = GameObject.Find("Directories");
+            foreach (Transform directoryobject in directory.transform)
+            {
+                boxlist.Add(directoryobject.gameObject.name, new Vector3(0, 0, 0));
+                string cloud = directoryobject.GetComponent<DynamicLoaderController>().cloudPath;
+                if (!cloud.EndsWith("\\"))
+                {
+                    cloud = cloud + "\\";
+                }
+                string jsonfile;
+                using (StreamReader reader = new StreamReader(cloud + "cloud.js", Encoding.Default))
+                {
+                    jsonfile = reader.ReadToEnd();
+                    reader.Close();
+                }
+                PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
+                boxlist[directoryobject.name] = new Vector3(data.RotateX, data.RotateY, data.RotateZ);
+            }
+            
 
             holders = new List<GameObject>();
             LoadShaders();
@@ -255,12 +274,17 @@ namespace ObjectCreation
             mesh.vertices = vertexData;
             mesh.colors = colorData;
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
-
+            subholder = GetHolder(name);
             //Set Translation
             //boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
-            gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
+            Vector3 temp = boxlist[subholder.name];
+            Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
+            gameObject.transform.Translate(newmin);
+            
+            //gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
             //Debug.Log(name);
-            subholder = GetHolder(name);
             offset = GetOffsets(subholder);
             rotate = GetRotation(subholder);
             //Debug.Log("rotatate angle" + rotate);

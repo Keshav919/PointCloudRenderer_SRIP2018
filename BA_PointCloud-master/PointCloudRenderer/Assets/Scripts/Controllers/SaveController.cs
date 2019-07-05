@@ -17,7 +17,7 @@ public class SaveController : MonoBehaviour {
         {
             Vector3 newposition = gameObject.transform.position;
             GameObject directory = GameObject.Find("Directories");
-            GameObject dirctoryobject = directory.transform.Find(base.gameObject.name).gameObject;
+            GameObject dirctoryobject = directory.transform.Find(gameObject.name).gameObject;
             string cloud = dirctoryobject.GetComponent<DynamicLoaderController>().cloudPath;
             string jsonfile;
             using (StreamReader reader = new StreamReader(cloud + "cloud.js", Encoding.Default))
@@ -26,12 +26,11 @@ public class SaveController : MonoBehaviour {
                 reader.Close();
             }
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
-            Debug.Log("gameobject" + gameObject.transform.position);
+            data.RotateX = gameObject.transform.eulerAngles.x;
+            data.RotateY = gameObject.transform.eulerAngles.y;
+            data.RotateZ = gameObject.transform.eulerAngles.z;
             Vector3d vector = ToVector3d(gameObject.transform.position);
-            Debug.Log(vector);
-            Debug.Log(data.boundingBox.lx);
             data.boundingBox.lx += vector.x;
-            Debug.Log(data.boundingBox.lx);
             data.boundingBox.ly += vector.z;
             data.boundingBox.lz += vector.y;
             data.boundingBox.ux += vector.x;

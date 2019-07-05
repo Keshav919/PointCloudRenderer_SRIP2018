@@ -109,5 +109,6 @@ public class OVRSliderLabelUpdater : MonoBehaviour {
             sliderValueField.text = string.Format("{0:0.00}", v);
 
         OVRController.speed = slider.value;
+        Debug.Log(slider.value);
     }
 }

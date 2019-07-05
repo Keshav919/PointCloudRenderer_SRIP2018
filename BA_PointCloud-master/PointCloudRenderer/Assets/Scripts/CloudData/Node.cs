@@ -141,6 +141,17 @@ namespace CloudData {
             if (vertices == null || colors == null || vertices.Length != colors.Length) {
                 throw new ArgumentException("Invalid data given!");
             }
+            /*
+            Quaternion rotation = Quaternion.Euler(metaData.RotateX, metaData.RotateY, metaData.RotateZ);
+            Debug.Log("rotation" + rotation);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            int i = 0;
+            while (i < vertices.Length)
+            {
+                vertices[i] = m.MultiplyPoint3x4(vertices[i]);
+                i++;
+            }
+            */
             verticesToStore = vertices;
             colorsToStore = colors;
             pointCount = vertices.Length;

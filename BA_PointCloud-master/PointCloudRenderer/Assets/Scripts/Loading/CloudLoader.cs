@@ -1,9 +1,11 @@
 ﻿using CloudData;
+using Controllers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using ObjectCreation;
 
 
 namespace Loading {
@@ -11,6 +13,8 @@ namespace Loading {
     /// Provides methods for loading point clouds from the file system
     /// </summary>
     class CloudLoader {
+
+
         /* Loads the metadata from the json-file in the given cloudpath
          */
         /// <summary>
@@ -19,7 +23,9 @@ namespace Loading {
         /// <param name="cloudPath">Folderpath of the cloud</param>
         /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static Node currentNode;
+
         
+
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
             using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {
@@ -40,6 +46,7 @@ namespace Loading {
         public static Node LoadPointCloud(PointCloudMetaData metaData) {
             string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
+            Debug.Log(metaData.RotateX);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
             return rootNode;
@@ -56,6 +63,7 @@ namespace Loading {
             LoadHierarchy(dataRPath, metaData, rootNode);
             return rootNode;
         }
+
 
         /// <summary>
         /// Loads the points for the given node
@@ -163,6 +171,17 @@ namespace Loading {
                     offset += 3;
                 }
             }
+            
+            Quaternion rotation = Quaternion.Euler(GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].x, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].y, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].z);
+            //Debug.Log(rotation);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            int a = 0;
+            while (a < vertices.Length)
+            {
+                vertices[a] = m.MultiplyPoint3x4(vertices[a]);
+                a++;
+            }
+            
             node.SetPoints(vertices, colors);
         }
 
@@ -183,13 +202,17 @@ namespace Loading {
 
         /* Loads the points for that node and all its children
          */
-        private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
+        private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node)
+        {
             LoadPoints(dataRPath, metaData, node);
-            for (int i = 0; i < 8; i++) {
-                if (node.HasChild(i)) {
+            for (int i = 0; i < 8; i++)
+            {
+                if (node.HasChild(i))
+                {
                     LoadAllPoints(dataRPath, metaData, node.GetChild(i));
                 }
             }
         }
+
     }
 }
