@@ -33,6 +33,15 @@ namespace Loading {
                 reader.Close();
             }
             PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
+            /*
+            Quaternion rotation = Quaternion.Euler(45,0,0);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            Vector3 tempmin = m.MultiplyPoint3x4(metaData.boundingBox.Min().ToFloatVector());
+            Vector3 tempmax = m.MultiplyPoint3x4(metaData.boundingBox.Max().ToFloatVector());
+            Vector3d min = ToVector3d(tempmin);
+            Vector3d max = ToVector3d(tempmax);
+            metaData.boundingBox = new BoundingBox(min, max);
+            */
             metaData.cloudPath = cloudPath;
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("\\") + 1);
             return metaData;
@@ -135,6 +144,14 @@ namespace Loading {
             } else {
                 max.x -= size.x / 2;
             }
+            /*
+            Quaternion rotation = Quaternion.Euler(45, 0, 0);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            Vector3 tempmin = m.MultiplyPoint3x4(min.ToFloatVector());
+            Vector3 tempmax = m.MultiplyPoint3x4(max.ToFloatVector());
+            min = ToVector3d(tempmin);
+            max = ToVector3d(tempmax);*/
+
             return new BoundingBox(min, max);
         }
 
@@ -173,7 +190,7 @@ namespace Loading {
             }
             
             Quaternion rotation = Quaternion.Euler(GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].x, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].y, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].z);
-            //Debug.Log(rotation);
+            
             Matrix4x4 m = Matrix4x4.Rotate(rotation);
             int a = 0;
             while (a < vertices.Length)
@@ -200,6 +217,18 @@ namespace Loading {
             return File.ReadAllBytes(dataRPath + path);
         }
 
+
+        private static Vector3d ToVector3d(Vector3 vector)
+        {
+            Vector3d newvector = new Vector3d(0, 0, 0);
+            double x = vector.x;
+            double y = vector.y;
+            double z = vector.z;
+            newvector.x = x;
+            newvector.y = y;
+            newvector.z = z;
+            return newvector;
+        }
         /* Loads the points for that node and all its children
          */
         private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node)

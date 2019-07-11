@@ -22,8 +22,8 @@ public class MenuControl : MonoBehaviour {
         menu = GameObject.FindGameObjectWithTag("Menu");
         menupos = menu.transform.position;
 
-        dis = menupos - campos;
-        distance = Mathf.Sqrt(dis.x * dis.x + dis.y * dis.y + dis.y * dis.y);
+        dis = campos - menupos;
+        distance = Mathf.Sqrt(dis.x * dis.x + dis.y * dis.y + dis.y * dis.y + dis.z * dis.z);
         
     }
 
@@ -46,8 +46,8 @@ public class MenuControl : MonoBehaviour {
         }
         if(hide == false)
         {
-            menu.transform.localRotation = Quaternion.Euler(new Vector3(menu.transform.localEulerAngles.x,
-                menu.transform.localEulerAngles.y, -1.7f));
+            menu.transform.localRotation = Quaternion.Euler(new Vector3(menu.transform.eulerAngles.x,
+                menu.transform.eulerAngles.y, 0f));
         }
         campos = maincamera.transform.position;
     }

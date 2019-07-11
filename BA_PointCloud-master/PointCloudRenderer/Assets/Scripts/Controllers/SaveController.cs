@@ -10,7 +10,7 @@ using System.IO;
 public class SaveController : MonoBehaviour {
 
     public bool SaveEnabled;
-
+    public bool Overwrite = false;
 	void Update ()
     {
         if (SaveEnabled)
@@ -26,10 +26,40 @@ public class SaveController : MonoBehaviour {
                 reader.Close();
             }
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
-            data.RotateX = gameObject.transform.eulerAngles.x;
-            data.RotateY = gameObject.transform.eulerAngles.y;
-            data.RotateZ = gameObject.transform.eulerAngles.z;
+            if (Overwrite)
+            {
+                data.RotateX = gameObject.transform.eulerAngles.x;
+                data.RotateY = gameObject.transform.eulerAngles.y;
+                data.RotateZ = gameObject.transform.eulerAngles.z;
+            }
+            else
+            {
+                data.RotateX += gameObject.transform.eulerAngles.x;
+                data.RotateY += gameObject.transform.eulerAngles.y;
+                data.RotateZ += gameObject.transform.eulerAngles.z;
+            }
+            /*
+            Quaternion rotation = Quaternion.Euler(gameObject.transform.eulerAngles.x, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            Vector3 tempmin = m.MultiplyPoint3x4(data.boundingBox.Min().ToFloatVector());
+            Vector3 tempmax = m.MultiplyPoint3x4(data.boundingBox.Max().ToFloatVector());
+            data.boundingBox.lx = tempmin.x;
+            data.boundingBox.ly = tempmin.y;
+            data.boundingBox.lz = tempmin.z;
+            data.boundingBox.ux = tempmax.x;
+            data.boundingBox.uy = tempmax.y;
+            data.boundingBox.uz = tempmax.z;
+            */
             Vector3d vector = ToVector3d(gameObject.transform.position);
+            if (data.RotateX == 0.0f && data.RotateY == 0.0f && data.RotateZ == 0.0f)
+            {
+                data.boundingBox.olx = data.boundingBox.lx;
+                data.boundingBox.oly = data.boundingBox.ly;
+                data.boundingBox.olz = data.boundingBox.lz;
+                data.boundingBox.oux = data.boundingBox.ux;
+                data.boundingBox.ouy = data.boundingBox.uy;
+                data.boundingBox.ouz = data.boundingBox.uz;
+            }
             data.boundingBox.lx += vector.x;
             data.boundingBox.ly += vector.z;
             data.boundingBox.lz += vector.y;

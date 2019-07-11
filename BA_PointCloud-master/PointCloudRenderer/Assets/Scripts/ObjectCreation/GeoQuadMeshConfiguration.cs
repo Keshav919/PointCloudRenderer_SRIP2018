@@ -91,10 +91,11 @@ namespace ObjectCreation
 
         public List<GameObject> holders;
 
+
         public Material[] Newmat;
 
         public static Dictionary<string, Vector3> boxlist = new Dictionary<string, Vector3>();
-
+        public static Dictionary<string, List<string>> rotatelist = new Dictionary<string, List<string>>();
         //public Vector3[] rotatepoints;
 
         //public GameObject Cloudholder;
@@ -277,18 +278,52 @@ namespace ObjectCreation
             subholder = GetHolder(name);
             //Set Translation
             //boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
-            Vector3 temp = boxlist[subholder.name];
-            Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
-            Matrix4x4 m = Matrix4x4.Rotate(rotation);
-            Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
-            gameObject.transform.Translate(newmin);
-            
-            //gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
-            //Debug.Log(name);
+            //Vector3 temp = boxlist[subholder.name];
+            //Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
+            //Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            //Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
+            //gameObject.transform.Translate(newmin);
+            List<string> existing;
+            if (!rotatelist.TryGetValue(subholder.name, out existing))
+            {
+                existing = new List<string>();
+                rotatelist[subholder.name] = existing;
+            }
+
+            if (!rotatelist[subholder.name].Contains(name))
+            {
+                Vector3 temp = boxlist[subholder.name];
+                Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
+                Matrix4x4 m = Matrix4x4.Rotate(rotation);
+                Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
+                Vector3 newmax = m.MultiplyPoint3x4(boundingBox.Max().ToFloatVector());
+                boundingBox.lx = newmin.x;
+                boundingBox.ly = newmin.y;
+                boundingBox.lz = newmin.z;
+                boundingBox.ux = newmax.x;
+                boundingBox.uy = newmax.y;
+                boundingBox.uz = newmax.z;
+                rotatelist[subholder.name].Add(name);
+                /*
+                Vector3 temp = boxlist[subholder.name];
+                Vector3 direction = boundingBox.Min().ToFloatVector() - subholder.transform.position;
+                direction = Quaternion.Euler(temp.x, temp.y, temp.z) * direction;
+                direction += subholder.transform.position;
+                boundingBox.lx = direction.x;                               
+                boundingBox.ly = direction.y;
+                boundingBox.lz = direction.z;
+                direction = boundingBox.Max().ToFloatVector() - subholder.transform.position;
+                Debug.Log(subholder.transform.position);
+                direction = Quaternion.Euler(temp.x, temp.y, temp.z) * direction;
+                direction += subholder.transform.position;
+                boundingBox.ux = direction.x;
+                boundingBox.uy = direction.y;
+                boundingBox.uz = direction.z;
+                rotatelist[subholder.name].Add(name);*/
+            }
+            gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
             offset = GetOffsets(subholder);
             rotate = GetRotation(subholder);
-            //Debug.Log("rotatate angle" + rotate);
-            //Cloudholder = Getcloudholder();
             gameObject.transform.Translate(offset);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.forward, rotate.z);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.right, rotate.x);
@@ -387,7 +422,17 @@ namespace ObjectCreation
             subholder = holder.transform.Find(name).gameObject;
             return subholder;
         }
-
+        private static Vector3d ToVector3d(Vector3 vector)
+        {
+            Vector3d newvector = new Vector3d(0, 0, 0);
+            double x = vector.x;
+            double y = vector.y;
+            double z = vector.z;
+            newvector.x = x;
+            newvector.y = y;
+            newvector.z = z;
+            return newvector;
+        }
         /*public void GetRotatePoints(GameObject subholder, Vector3 rotateangle)
         {
             if (RotateSwitch == true)

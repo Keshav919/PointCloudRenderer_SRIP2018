@@ -14,7 +14,7 @@ public class OVRController_Advanced : MonoBehaviour {
     private GameObject player;
 
     //default speed of player
-    public static float speed = 1;
+    public float speed = 1;
 
     //orientation of the cloud
     private Vector3 rot;
