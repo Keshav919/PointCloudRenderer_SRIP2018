@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SelectObject : MonoBehaviour {
 
     public List<string> cloud;
     public bool chosen = true;
     public Transform holder;
-
+    public bool restart = false;
     public int count = 0;
 
 	void Start () {
@@ -68,5 +69,15 @@ public class SelectObject : MonoBehaviour {
         var save = selected.GetComponent<SaveController>();
         save.SaveEnabled = true;
     }
+
+    public void RestartScene()
+    {
+        if (restart)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        restart = false;
+    }
+
 
 }

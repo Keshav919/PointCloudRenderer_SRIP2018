@@ -37,6 +37,7 @@ namespace Controllers {
                 holder.AddComponent<DrawOutline>();
                 holder.AddComponent<MaintainView>();
                 holder.AddComponent<SaveController>();
+                //holder.transform.Translate(10, 0, 0);
                 //holder.AddComponent<SaveRotation>();
                 DynamicLoaderController loader = go.AddComponent<DynamicLoaderController>();
                 loader.cloudPath = sub.FullName;

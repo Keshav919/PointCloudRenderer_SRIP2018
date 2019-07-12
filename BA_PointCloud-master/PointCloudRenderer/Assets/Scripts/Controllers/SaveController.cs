@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 public class SaveController : MonoBehaviour {
 
     public bool SaveEnabled;
     public bool Overwrite = false;
+    public bool restart = false;
 	void Update ()
     {
         if (SaveEnabled)
@@ -76,9 +78,13 @@ public class SaveController : MonoBehaviour {
             File.WriteAllText(cloud + "cloud.js", output);
             Debug.Log("updated!");
             SaveEnabled = false;
-
         }
-	}
+        if (restart)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+    }
 
     public Vector3d ToVector3d(Vector3 vector)
     {
@@ -91,5 +97,4 @@ public class SaveController : MonoBehaviour {
         newvector.z = z;
         return newvector;
     }
-
 }

@@ -91,6 +91,8 @@ namespace ObjectCreation
 
         public List<GameObject> holders;
 
+        public PointCloudMetaData data;
+
 
         public Material[] Newmat;
 
@@ -190,7 +192,7 @@ namespace ObjectCreation
                     jsonfile = reader.ReadToEnd();
                     reader.Close();
                 }
-                PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
+                data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
                 boxlist[directoryobject.name] = new Vector3(data.RotateX, data.RotateY, data.RotateZ);
             }
             
@@ -292,17 +294,27 @@ namespace ObjectCreation
 
             if (!rotatelist[subholder.name].Contains(name))
             {
+                Vector3 offmin = new Vector3((float)(data.boundingBox.lx - data.boundingBox.olx), (float)(data.boundingBox.ly - data.boundingBox.oly), (float)(data.boundingBox.lz - data.boundingBox.olz));
+                Vector3 offmax = new Vector3((float)(data.boundingBox.ux - data.boundingBox.oux), (float)(data.boundingBox.uy - data.boundingBox.ouy), (float)(data.boundingBox.uz - data.boundingBox.ouz));
+                Debug.Log(offmin);
+                Debug.Log(offmax);
+                boundingBox.lx -= offmin.x;
+                boundingBox.ly -= offmin.z;
+                boundingBox.lz -= offmin.y;
+                boundingBox.ux -= offmax.x;
+                boundingBox.uy -= offmax.z;
+                boundingBox.uz -= offmax.y;
                 Vector3 temp = boxlist[subholder.name];
                 Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
                 Matrix4x4 m = Matrix4x4.Rotate(rotation);
                 Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
                 Vector3 newmax = m.MultiplyPoint3x4(boundingBox.Max().ToFloatVector());
-                boundingBox.lx = newmin.x;
-                boundingBox.ly = newmin.y;
-                boundingBox.lz = newmin.z;
-                boundingBox.ux = newmax.x;
-                boundingBox.uy = newmax.y;
-                boundingBox.uz = newmax.z;
+                boundingBox.lx = newmin.x + offmin.x;
+                boundingBox.ly = newmin.y + offmin.z;
+                boundingBox.lz = newmin.z + offmin.y;
+                boundingBox.ux = newmax.x + offmax.x;
+                boundingBox.uy = newmax.y + offmax.z;
+                boundingBox.uz = newmax.z + offmax.y;
                 rotatelist[subholder.name].Add(name);
                 /*
                 Vector3 temp = boxlist[subholder.name];
@@ -325,6 +337,7 @@ namespace ObjectCreation
             offset = GetOffsets(subholder);
             rotate = GetRotation(subholder);
             gameObject.transform.Translate(offset);
+            //gameObject.transform.localPosition -= new Vector3(5, 0, 0);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.forward, rotate.z);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.right, rotate.x);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.up, rotate.y);
