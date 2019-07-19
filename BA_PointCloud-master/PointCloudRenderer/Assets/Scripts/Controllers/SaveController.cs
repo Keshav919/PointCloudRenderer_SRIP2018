@@ -7,13 +7,15 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using ObjectCreation;
 
 public class SaveController : MonoBehaviour
 {
 
-    public bool SaveEnabled;
+    public bool SaveEnabled = false;
     public bool Overwrite = false;
     public bool restart = false;
+    public bool SetPivot = false;
     void Update()
     {
         if (SaveEnabled)
@@ -54,7 +56,7 @@ public class SaveController : MonoBehaviour
             data.boundingBox.uz = tempmax.z;
             */
             Vector3d vector = ToVector3d(gameObject.transform.position);
-            if (data.RotateX == 0.0f && data.RotateY == 0.0f && data.RotateZ == 0.0f)
+            if (SetPivot)
             {
                 data.boundingBox.olx = data.boundingBox.lx;
                 data.boundingBox.oly = data.boundingBox.ly;
@@ -63,18 +65,18 @@ public class SaveController : MonoBehaviour
                 data.boundingBox.ouy = data.boundingBox.uy;
                 data.boundingBox.ouz = data.boundingBox.uz;
             }
-            data.boundingBox.lx += vector.x;
-            data.boundingBox.ly += vector.z;
-            data.boundingBox.lz += vector.y;
-            data.boundingBox.ux += vector.x;
-            data.boundingBox.uy += vector.z;
-            data.boundingBox.uz += vector.y;
-            data.tightBoundingBox.lx += vector.x;
-            data.tightBoundingBox.ly += vector.z;
-            data.tightBoundingBox.lz += vector.y;
-            data.tightBoundingBox.ux += vector.x;
-            data.tightBoundingBox.uy += vector.z;
-            data.tightBoundingBox.uz += vector.y;
+            data.boundingBox.lx += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
+            data.boundingBox.ly += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
+            data.boundingBox.lz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
+            data.boundingBox.ux += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
+            data.boundingBox.uy += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
+            data.boundingBox.uz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
+            data.tightBoundingBox.lx += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
+            data.tightBoundingBox.ly += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
+            data.tightBoundingBox.lz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
+            data.tightBoundingBox.ux += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
+            data.tightBoundingBox.uy += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
+            data.tightBoundingBox.uz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
             string output = JsonUtility.ToJson(data);
             File.WriteAllText(cloud + "cloud.js", output);
             Debug.Log("updated!");
@@ -82,7 +84,8 @@ public class SaveController : MonoBehaviour
         }
         if (restart)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            GeoQuadMeshConfiguration.rotatelist.Clear();
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
     }

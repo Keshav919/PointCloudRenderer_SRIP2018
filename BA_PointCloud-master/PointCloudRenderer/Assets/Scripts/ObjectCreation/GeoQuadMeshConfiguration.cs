@@ -263,7 +263,9 @@ namespace ObjectCreation
             //Matrix4x4 m = Matrix4x4.Rotate(rotation);
             //Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
             //gameObject.transform.Translate(newmin);
-            List<string> existing;
+            Vector3 temps = CloudsFromDirectoryLoader.boxoffset[subholder.name];
+            gameObject.transform.Translate(-1 * new Vector3(temps.x, temps.z, temps.y));
+            List<string> existing = new List<string>();
             if (!rotatelist.TryGetValue(subholder.name, out existing))
             {
                 existing = new List<string>();

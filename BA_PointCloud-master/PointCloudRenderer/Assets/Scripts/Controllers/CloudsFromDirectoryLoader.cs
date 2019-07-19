@@ -65,6 +65,7 @@ namespace Controllers
                 data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
                 boxlist[sub.Name] = new Vector3(data.RotateX, data.RotateY, data.RotateZ);
                 boxoffset[sub.Name] = new Vector3((float)(data.boundingBox.lx - data.boundingBox.olx), (float)(data.boundingBox.ly - data.boundingBox.oly), (float)(data.boundingBox.lz - data.boundingBox.olz));
+                holder.transform.Translate(new Vector3 (boxoffset[sub.Name].x, boxoffset[sub.Name].z, boxoffset[sub.Name].y));
             }
         }
     }

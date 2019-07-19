@@ -198,7 +198,6 @@ namespace Loading {
                 vertices[a] = m.MultiplyPoint3x4(vertices[a]);
                 a++;
             }
-            
             node.SetPoints(vertices, colors);
         }
 

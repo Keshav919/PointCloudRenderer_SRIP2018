@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ObjectCreation;
+using Loading;
+using Controllers;
 
 public class SelectObject : MonoBehaviour {
 
     public List<string> cloud;
     public bool chosen = true;
     public Transform holder;
-    public bool restart = false;
+    public bool reload = true;
     public int count = 0;
 
 	void Start () {
@@ -72,12 +75,9 @@ public class SelectObject : MonoBehaviour {
 
     public void RestartScene()
     {
-        if (restart)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }
-        restart = false;
+        var script = GameObject.Find("PointSetController").GetComponent<PointCloudSetRealTimeController>();
+        script.PointRenderer.ShutDown();
+        GeoQuadMeshConfiguration.rotatelist.Clear();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
-
 }
