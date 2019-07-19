@@ -91,12 +91,10 @@ namespace ObjectCreation
 
         public List<GameObject> holders;
 
-        public PointCloudMetaData data;
 
 
         public Material[] Newmat;
 
-        public static Dictionary<string, Vector3> boxlist = new Dictionary<string, Vector3>();
         public static Dictionary<string, List<string>> rotatelist = new Dictionary<string, List<string>>();
         //public Vector3[] rotatepoints;
 
@@ -114,7 +112,7 @@ namespace ObjectCreation
 
             if (interpolation == InterpolationMode.OFF)
             {
-                if (screenSize )
+                if (screenSize)
                 {
                     material = new Material(Shader.Find("Custom/QuadGeoScreenSizeShader"));
                 }
@@ -176,26 +174,6 @@ namespace ObjectCreation
             {
                 gameObjectCollection = new HashSet<GameObject>();
             }
-
-            GameObject directory = GameObject.Find("Directories");
-            foreach (Transform directoryobject in directory.transform)
-            {
-                boxlist.Add(directoryobject.gameObject.name, new Vector3(0, 0, 0));
-                string cloud = directoryobject.GetComponent<DynamicLoaderController>().cloudPath;
-                if (!cloud.EndsWith("\\"))
-                {
-                    cloud = cloud + "\\";
-                }
-                string jsonfile;
-                using (StreamReader reader = new StreamReader(cloud + "cloud.js", Encoding.Default))
-                {
-                    jsonfile = reader.ReadToEnd();
-                    reader.Close();
-                }
-                data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
-                boxlist[directoryobject.name] = new Vector3(data.RotateX, data.RotateY, data.RotateZ);
-            }
-            
 
             holders = new List<GameObject>();
             LoadShaders();
@@ -294,17 +272,15 @@ namespace ObjectCreation
 
             if (!rotatelist[subholder.name].Contains(name))
             {
-                Vector3 offmin = new Vector3((float)(data.boundingBox.lx - data.boundingBox.olx), (float)(data.boundingBox.ly - data.boundingBox.oly), (float)(data.boundingBox.lz - data.boundingBox.olz));
-                Vector3 offmax = new Vector3((float)(data.boundingBox.ux - data.boundingBox.oux), (float)(data.boundingBox.uy - data.boundingBox.ouy), (float)(data.boundingBox.uz - data.boundingBox.ouz));
+                Vector3 offmin = CloudsFromDirectoryLoader.boxoffset[subholder.name];
                 Debug.Log(offmin);
-                Debug.Log(offmax);
                 boundingBox.lx -= offmin.x;
                 boundingBox.ly -= offmin.z;
                 boundingBox.lz -= offmin.y;
-                boundingBox.ux -= offmax.x;
-                boundingBox.uy -= offmax.z;
-                boundingBox.uz -= offmax.y;
-                Vector3 temp = boxlist[subholder.name];
+                boundingBox.ux -= offmin.x;
+                boundingBox.uy -= offmin.z;
+                boundingBox.uz -= offmin.y;
+                Vector3 temp = CloudsFromDirectoryLoader.boxlist[subholder.name];
                 Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
                 Matrix4x4 m = Matrix4x4.Rotate(rotation);
                 Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
@@ -312,9 +288,9 @@ namespace ObjectCreation
                 boundingBox.lx = newmin.x + offmin.x;
                 boundingBox.ly = newmin.y + offmin.z;
                 boundingBox.lz = newmin.z + offmin.y;
-                boundingBox.ux = newmax.x + offmax.x;
-                boundingBox.uy = newmax.y + offmax.z;
-                boundingBox.uz = newmax.z + offmax.y;
+                boundingBox.ux = newmax.x + offmin.x;
+                boundingBox.uy = newmax.y + offmin.z;
+                boundingBox.uz = newmax.z + offmin.y;
                 rotatelist[subholder.name].Add(name);
                 /*
                 Vector3 temp = boxlist[subholder.name];

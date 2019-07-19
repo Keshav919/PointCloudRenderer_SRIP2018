@@ -189,7 +189,7 @@ namespace Loading {
                 }
             }
             
-            Quaternion rotation = Quaternion.Euler(GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].x, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].y, GeoQuadMeshConfiguration.boxlist[node.MetaData.cloudName].z);
+            Quaternion rotation = Quaternion.Euler(CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].x, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].y, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].z);
             
             Matrix4x4 m = Matrix4x4.Rotate(rotation);
             int a = 0;

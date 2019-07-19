@@ -8,12 +8,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
 
-public class SaveController : MonoBehaviour {
+public class SaveController : MonoBehaviour
+{
 
     public bool SaveEnabled;
     public bool Overwrite = false;
     public bool restart = false;
-	void Update ()
+    void Update()
     {
         if (SaveEnabled)
         {
