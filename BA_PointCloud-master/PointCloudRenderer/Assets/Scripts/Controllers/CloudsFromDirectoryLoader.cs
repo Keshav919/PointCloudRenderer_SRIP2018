@@ -26,6 +26,7 @@ namespace Controllers
         public string filename;
         public static Dictionary<string, Vector3> boxlist = new Dictionary<string, Vector3>();
         public static Dictionary<string, Vector3> boxoffset = new Dictionary<string, Vector3>();
+        public static Dictionary<string, Vector3> boxscale = new Dictionary<string, Vector3>();
         private PointCloudMetaData data;
 
         void Start()
@@ -65,6 +66,14 @@ namespace Controllers
                 data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
                 boxlist[sub.Name] = new Vector3(data.RotateX, data.RotateY, data.RotateZ);
                 boxoffset[sub.Name] = new Vector3((float)(data.boundingBox.lx - data.boundingBox.olx), (float)(data.boundingBox.ly - data.boundingBox.oly), (float)(data.boundingBox.lz - data.boundingBox.olz));
+                if (data.ScaleX == 0)
+                {
+                    boxscale[sub.Name] = new Vector3 (1, 1, 1);
+                }
+                else
+                {
+                    boxscale[sub.Name] = new Vector3(data.ScaleX, data.ScaleY, data.ScaleZ);
+                }
                 holder.transform.Translate(new Vector3 (boxoffset[sub.Name].x, boxoffset[sub.Name].z, boxoffset[sub.Name].y));
             }
         }

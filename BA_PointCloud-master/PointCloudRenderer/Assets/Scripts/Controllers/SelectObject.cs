@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using ObjectCreation;
 using Loading;
 using Controllers;
+using UnityEngine.UI;
 
 public class SelectObject : MonoBehaviour {
 
@@ -13,71 +14,55 @@ public class SelectObject : MonoBehaviour {
     public Transform holder;
     public bool reload = true;
     public int count = 0;
+    public Dropdown dropdown;
+    public int dropdownvalue;
 
-	void Start () {
+
+    void Start () {
         cloud = new List<string>();
         holder = GameObject.FindGameObjectWithTag("Holder").transform;
         foreach (Transform pointcloud in holder)
         {
             cloud.Add(pointcloud.name);
         }
+        dropdown.ClearOptions();
+        dropdown.AddOptions(cloud);
 	}
-	
-    public void SelectCloud()
+
+    void Update()
     {
-        if (count == cloud.Count)
-        {
-            GameObject previous = holder.Find(cloud[count - 1]).gameObject;
-            previous.GetComponent<DrawOutline>().selected = true;
-            count = 0;
-            return;
-        }
-        if (count != 0)
-        {
-            GameObject previous = holder.Find(cloud[count - 1]).gameObject;
-            previous.GetComponent<DrawOutline>().selected = true;
-        }
-        GameObject selected = holder.Find(cloud[count]).gameObject;
-        selected.GetComponent<DrawOutline>().selected = true;
-        count++;
+        dropdownvalue = dropdown.value;
     }
 
-    public void SelectPosition()
-    {
-        if (count == 0)
-        {
-            return;
-        }
-
-        else if (chosen)
-        {
-            GameObject selected = holder.Find(cloud[count-1]).gameObject;
-            selected.GetComponent<DrawOutline>().selected = true;
-            selected.GetComponent<MaintainView>().AdjustPosition = true;
-            chosen = !chosen;
-        }
-        else if (!chosen)
-        {
-            GameObject selected = holder.Find(cloud[count-1]).gameObject;
-            selected.GetComponent<MaintainView>().AdjustPosition = true;
-            selected.GetComponent<DrawOutline>().selected = true;
-            chosen = !chosen;
-        }
-
-    }
 
     public void SavePointCloud()
     {
-        GameObject selected = holder.Find(cloud[count - 1]).gameObject;
+        GameObject selected = holder.Find(dropdown.options[dropdownvalue].text).gameObject;
         var save = selected.GetComponent<SaveController>();
-        save.SaveEnabled = true;
+        if (!save.saved)
+        {
+            save.SaveEnabled = true;
+        }
+        return;
     }
 
     public void RestartScene()
     {
-        var script = GameObject.Find("PointSetController").GetComponent<PointCloudSetRealTimeController>();
-        script.PointRenderer.ShutDown();
-        GeoQuadMeshConfiguration.rotatelist.Clear();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        GameObject selected = holder.Find(dropdown.options[dropdownvalue].text).gameObject;
+        selected.GetComponent<SaveController>().restart = true;
     }
+
+    public void SetPivot()
+    {
+        GameObject selected = holder.Find(dropdown.options[dropdownvalue].text).gameObject;
+        selected.GetComponent<SaveController>().SetPivot = true;
+    }
+
+
+    public void MoveCloud()
+    {
+        GameObject selected = holder.Find(dropdown.options[dropdownvalue].text).gameObject;
+        selected.GetComponent<MaintainView>().AdjustPosition = true;
+    }
+
 }

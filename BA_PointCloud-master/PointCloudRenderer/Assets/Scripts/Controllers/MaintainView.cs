@@ -15,6 +15,7 @@ public class MaintainView : MonoBehaviour {
     private void Start()
     {
         CameraTransform = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        
     }
 
 
@@ -33,17 +34,16 @@ public class MaintainView : MonoBehaviour {
         else if (recorded)
         {
             Vector3 newposition = CameraTransform.position + CameraTransform.forward * distance;
-            var script = gameObject.GetComponent<DrawOutline>();
+            /*var script = gameObject.GetComponent<DrawOutline>();
             if (!script.reloaded)
             {
                 script.selected = true;
-            }
+            }*/
             gameObject.transform.position = newposition;
             if (AdjustPosition)
             {
                 recorded = false;
                 AdjustPosition = false;
-                script.selected = true;
             }
         }
     }

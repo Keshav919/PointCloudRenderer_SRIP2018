@@ -16,10 +16,13 @@ public class SaveController : MonoBehaviour
     public bool Overwrite = false;
     public bool restart = false;
     public bool SetPivot = false;
+    public bool saved = false;
+
     void Update()
     {
         if (SaveEnabled)
         {
+            saved = true;
             Vector3 newposition = gameObject.transform.position;
             GameObject directory = GameObject.Find("Directories");
             GameObject dirctoryobject = directory.transform.Find(gameObject.name).gameObject;
@@ -43,28 +46,40 @@ public class SaveController : MonoBehaviour
                 data.RotateY += gameObject.transform.eulerAngles.y;
                 data.RotateZ += gameObject.transform.eulerAngles.z;
             }
-            /*
-            Quaternion rotation = Quaternion.Euler(gameObject.transform.eulerAngles.x, gameObject.transform.eulerAngles.y, gameObject.transform.eulerAngles.z);
-            Matrix4x4 m = Matrix4x4.Rotate(rotation);
-            Vector3 tempmin = m.MultiplyPoint3x4(data.boundingBox.Min().ToFloatVector());
-            Vector3 tempmax = m.MultiplyPoint3x4(data.boundingBox.Max().ToFloatVector());
-            data.boundingBox.lx = tempmin.x;
-            data.boundingBox.ly = tempmin.y;
-            data.boundingBox.lz = tempmin.z;
-            data.boundingBox.ux = tempmax.x;
-            data.boundingBox.uy = tempmax.y;
-            data.boundingBox.uz = tempmax.z;
-            */
-            Vector3d vector = ToVector3d(gameObject.transform.position);
-            if (SetPivot)
+            if (data.ScaleX == 0)
             {
-                data.boundingBox.olx = data.boundingBox.lx;
-                data.boundingBox.oly = data.boundingBox.ly;
-                data.boundingBox.olz = data.boundingBox.lz;
-                data.boundingBox.oux = data.boundingBox.ux;
-                data.boundingBox.ouy = data.boundingBox.uy;
-                data.boundingBox.ouz = data.boundingBox.uz;
+                data.ScaleX = 1;
+                data.ScaleY = 1;
+                data.ScaleZ = 1;
             }
+            else
+            {
+                data.ScaleX *= gameObject.transform.localScale.x;
+                data.ScaleY *= gameObject.transform.localScale.y;
+                data.ScaleZ *= gameObject.transform.localScale.z;
+            }
+
+            Vector3 scale = CloudsFromDirectoryLoader.boxscale[gameObject.name];
+            data.boundingBox.lx *= data.ScaleX / scale.x;
+            data.boundingBox.ly *= data.ScaleY / scale.y;
+            data.boundingBox.lz *= data.ScaleZ / scale.z;
+            data.boundingBox.ux *= data.ScaleX / scale.x;
+            data.boundingBox.uy *= data.ScaleY / scale.y;
+            data.boundingBox.uz *= data.ScaleZ / scale.z;
+            data.tightBoundingBox.lx *= data.ScaleX / scale.x;
+            data.tightBoundingBox.ly *= data.ScaleY / scale.y;
+            data.tightBoundingBox.lz *= data.ScaleZ / scale.z;
+            data.tightBoundingBox.ux *= data.ScaleX / scale.x;
+            data.tightBoundingBox.uy *= data.ScaleY / scale.y;
+            data.tightBoundingBox.uz *= data.ScaleZ / scale.z;
+            data.boundingBox.olx *= data.ScaleX / scale.x;
+            data.boundingBox.oly *= data.ScaleY / scale.y;
+            data.boundingBox.olz *= data.ScaleZ / scale.z;
+            data.boundingBox.oux *= data.ScaleX / scale.x;
+            data.boundingBox.ouy *= data.ScaleY / scale.y;
+            data.boundingBox.ouz *= data.ScaleZ / scale.z;
+
+            Vector3d vector = ToVector3d(gameObject.transform.position);
             data.boundingBox.lx += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
             data.boundingBox.ly += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
             data.boundingBox.lz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
@@ -77,6 +92,15 @@ public class SaveController : MonoBehaviour
             data.tightBoundingBox.ux += vector.x - CloudsFromDirectoryLoader.boxoffset[gameObject.name].x;
             data.tightBoundingBox.uy += vector.z - CloudsFromDirectoryLoader.boxoffset[gameObject.name].y;
             data.tightBoundingBox.uz += vector.y - CloudsFromDirectoryLoader.boxoffset[gameObject.name].z;
+            if (SetPivot)
+            {
+                data.boundingBox.olx = data.boundingBox.lx;
+                data.boundingBox.oly = data.boundingBox.ly;
+                data.boundingBox.olz = data.boundingBox.lz;
+                data.boundingBox.oux = data.boundingBox.ux;
+                data.boundingBox.ouy = data.boundingBox.uy;
+                data.boundingBox.ouz = data.boundingBox.uz;
+            }
             string output = JsonUtility.ToJson(data);
             File.WriteAllText(cloud + "cloud.js", output);
             Debug.Log("updated!");

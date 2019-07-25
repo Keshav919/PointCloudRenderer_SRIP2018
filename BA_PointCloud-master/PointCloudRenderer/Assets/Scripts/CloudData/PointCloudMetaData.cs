@@ -24,6 +24,9 @@ namespace CloudData
         public float RotateX;
         public float RotateY;
         public float RotateZ;
+        public float ScaleX;
+        public float ScaleY;
+        public float ScaleZ;
         [NonSerialized]
         public string cloudPath;
         [NonSerialized]

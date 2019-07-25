@@ -275,7 +275,6 @@ namespace ObjectCreation
             if (!rotatelist[subholder.name].Contains(name))
             {
                 Vector3 offmin = CloudsFromDirectoryLoader.boxoffset[subholder.name];
-                Debug.Log(offmin);
                 boundingBox.lx -= offmin.x;
                 boundingBox.ly -= offmin.z;
                 boundingBox.lz -= offmin.y;
@@ -294,22 +293,6 @@ namespace ObjectCreation
                 boundingBox.uy = newmax.y + offmin.z;
                 boundingBox.uz = newmax.z + offmin.y;
                 rotatelist[subholder.name].Add(name);
-                /*
-                Vector3 temp = boxlist[subholder.name];
-                Vector3 direction = boundingBox.Min().ToFloatVector() - subholder.transform.position;
-                direction = Quaternion.Euler(temp.x, temp.y, temp.z) * direction;
-                direction += subholder.transform.position;
-                boundingBox.lx = direction.x;                               
-                boundingBox.ly = direction.y;
-                boundingBox.lz = direction.z;
-                direction = boundingBox.Max().ToFloatVector() - subholder.transform.position;
-                Debug.Log(subholder.transform.position);
-                direction = Quaternion.Euler(temp.x, temp.y, temp.z) * direction;
-                direction += subholder.transform.position;
-                boundingBox.ux = direction.x;
-                boundingBox.uy = direction.y;
-                boundingBox.uz = direction.z;
-                rotatelist[subholder.name].Add(name);*/
             }
             gameObject.transform.Translate(boundingBox.Min().ToFloatVector());
             offset = GetOffsets(subholder);
@@ -348,27 +331,6 @@ namespace ObjectCreation
             Destroy(gameObject.GetComponent<MeshFilter>().sharedMesh);
             Destroy(gameObject);
         }
-
-        /*public Vector3 GetOffset()
-        {
-            holder = GameObject.FindGameObjectWithTag("Holder");
-            if (originalpos != holder.transform.position)
-            {
-                offset = (holder.transform.position - originalpos);
-                //Debug.Log("there is offset");
-                //Debug.Log(offset.ToString());
-                //currentpos = transform.position;
-                return offset;
-            }
-            else
-            {
-                //Debug.Log(transform.ToString() + offset.ToString());
-                //return originalpos;
-                //Debug.Log("there is no offset");
-                return new Vector3(0, 0, 0);
-            }
-        }
-        */
 
         public Vector3 GetOffsets(GameObject subholder)
         {
@@ -415,36 +377,8 @@ namespace ObjectCreation
         }
         private static Vector3d ToVector3d(Vector3 vector)
         {
-            Vector3d newvector = new Vector3d(0, 0, 0);
-            double x = vector.x;
-            double y = vector.y;
-            double z = vector.z;
-            newvector.x = x;
-            newvector.y = y;
-            newvector.z = z;
+            Vector3d newvector = new Vector3d(vector.x, vector.y, vector.z);
             return newvector;
         }
-        /*public void GetRotatePoints(GameObject subholder, Vector3 rotateangle)
-        {
-            if (RotateSwitch == true)
-            {
-                if (rotateangle.x != 0 && rotatepoints[0] != subholder.transform.position) 
-                {
-                    rotatepoints[0] = subholder.transform.position;
-                }
-                else if (rotateangle.y != 0 && rotatepoints[1] != subholder.transform.position)
-                {
-                    rotatepoints[1] = subholder.transform.position;
-                }
-                else if (rotateangle.z != 0 && rotatepoints[2] != subholder.transform.position)
-                {
-                    rotatepoints[2] = subholder.transform.position;
-                }
-            }
-            else
-            {
-                return;
-            }
-        }*/
     }
 }

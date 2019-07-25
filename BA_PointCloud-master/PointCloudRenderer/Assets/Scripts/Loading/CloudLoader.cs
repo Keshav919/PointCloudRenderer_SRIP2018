@@ -33,15 +33,6 @@ namespace Loading {
                 reader.Close();
             }
             PointCloudMetaData metaData = PointCloudMetaData.ReadFromJson(jsonfile, moveToOrigin);
-            /*
-            Quaternion rotation = Quaternion.Euler(45,0,0);
-            Matrix4x4 m = Matrix4x4.Rotate(rotation);
-            Vector3 tempmin = m.MultiplyPoint3x4(metaData.boundingBox.Min().ToFloatVector());
-            Vector3 tempmax = m.MultiplyPoint3x4(metaData.boundingBox.Max().ToFloatVector());
-            Vector3d min = ToVector3d(tempmin);
-            Vector3d max = ToVector3d(tempmax);
-            metaData.boundingBox = new BoundingBox(min, max);
-            */
             metaData.cloudPath = cloudPath;
             metaData.cloudName =  cloudPath.Substring(0, cloudPath.Length-1).Substring(cloudPath.Substring(0, cloudPath.Length - 1).LastIndexOf("\\") + 1);
             return metaData;
@@ -190,11 +181,11 @@ namespace Loading {
             }
             
             Quaternion rotation = Quaternion.Euler(CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].x, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].y, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].z);
-            
             Matrix4x4 m = Matrix4x4.Rotate(rotation);
             int a = 0;
             while (a < vertices.Length)
             {
+                vertices[a] = Vector3.Scale(vertices[a], CloudsFromDirectoryLoader.boxscale[node.MetaData.cloudName]);
                 vertices[a] = m.MultiplyPoint3x4(vertices[a]);
                 a++;
             }
