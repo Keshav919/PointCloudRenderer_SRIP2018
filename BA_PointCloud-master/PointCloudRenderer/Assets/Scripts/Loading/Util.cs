@@ -20,21 +20,21 @@ namespace Loading {
             for (int i = 1; i < 5; i++) {
                 inside = false;
                 Plane plane = frustum[i];   //Ignore Far Plane, because it doesnt work because of inf values
-                inside |= plane.GetSide(new Vector3((float)box.Lx, (float)box.Ly, (float)box.Lz));
+                inside |= plane.GetSide(new Vector3((float)box.lx, (float)box.ly, (float)box.lz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Lx, (float)box.Ly, (float)box.Uz));
+                inside |= plane.GetSide(new Vector3((float)box.lx, (float)box.ly, (float)box.uz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Lx, (float)box.Uy, (float)box.Lz));
+                inside |= plane.GetSide(new Vector3((float)box.lx, (float)box.uy, (float)box.lz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Lx, (float)box.Uy, (float)box.Uz));
+                inside |= plane.GetSide(new Vector3((float)box.lx, (float)box.uy, (float)box.uz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Ux, (float)box.Ly, (float)box.Lz));
+                inside |= plane.GetSide(new Vector3((float)box.ux, (float)box.ly, (float)box.lz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Ux, (float)box.Ly, (float)box.Uz));
+                inside |= plane.GetSide(new Vector3((float)box.ux, (float)box.ly, (float)box.uz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Ux, (float)box.Uy, (float)box.Lz));
+                inside |= plane.GetSide(new Vector3((float)box.ux, (float)box.uy, (float)box.lz));
                 if (inside) continue;
-                inside |= plane.GetSide(new Vector3((float)box.Ux, (float)box.Uy, (float)box.Uz));
+                inside |= plane.GetSide(new Vector3((float)box.ux, (float)box.uy, (float)box.uz));
                 if (!inside) return false;
             }
             return true;

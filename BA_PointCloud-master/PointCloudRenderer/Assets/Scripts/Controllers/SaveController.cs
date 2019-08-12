@@ -36,9 +36,9 @@ public class SaveController : MonoBehaviour
             PointCloudMetaData data = JsonUtility.FromJson<PointCloudMetaData>(jsonfile);
             if (Overwrite)
             {
-                data.RotateX = gameObject.transform.eulerAngles.x;
-                data.RotateY = gameObject.transform.eulerAngles.y;
-                data.RotateZ = gameObject.transform.eulerAngles.z;
+                data.RotateX = 0f;
+                data.RotateY = 0f;
+                data.RotateZ = 0f;
             }
             else
             {
@@ -109,6 +109,8 @@ public class SaveController : MonoBehaviour
         if (restart)
         {
             GeoQuadMeshConfiguration.rotatelist.Clear();
+            var script = GameObject.Find("PointSetController").GetComponent<PointCloudSetRealTimeController>();
+            script.PointRenderer.ShutDown();
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 

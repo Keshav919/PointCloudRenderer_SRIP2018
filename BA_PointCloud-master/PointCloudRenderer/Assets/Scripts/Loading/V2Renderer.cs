@@ -49,8 +49,7 @@ namespace Loading {
             loadingThread = new V2LoadingThread(cache, holders);
             loadingThread.Start();
             traversalThread = new V2TraversalThread(this, loadingThread, rootNodes, minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsperFrame, cache);
-            traversalThread.Start();
-            
+            traversalThread.Start();      
         }
 
         /// <summary>

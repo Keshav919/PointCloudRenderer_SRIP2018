@@ -59,25 +59,19 @@ public class SelectRotate : MonoBehaviour {
     }
     public void SetScaleY()
     {
-        if (script.chosen)
-        {
-            GameObject selected = script.holder.Find(script.dropdown.options[script.dropdownvalue].text).gameObject;
-            Vector3 scale = selected.transform.localScale;
-            selected.transform.localScale = new Vector3(scale.x, slider.value, scale.z);
-            GameObject value = slider.transform.Find("Value").gameObject;
-            value.GetComponent<Text>().text = slider.value.ToString();
-        }
+        GameObject selected = script.holder.Find(script.dropdown.options[script.dropdownvalue].text).gameObject;
+        Vector3 scale = selected.transform.localScale;
+        selected.transform.localScale = new Vector3(scale.x, slider.value, scale.z);
+        GameObject value = slider.transform.Find("Value").gameObject;
+        value.GetComponent<Text>().text = slider.value.ToString();
     }
     public void SetScaleZ()
     {
-        if (script.chosen)
-        {
-            GameObject selected = script.holder.Find(script.dropdown.options[script.dropdownvalue].text).gameObject;
-            Vector3 scale = selected.transform.localScale;
-            selected.transform.localScale = new Vector3(scale.x, scale.y, slider.value);
-            GameObject value = slider.transform.Find("Value").gameObject;
-            value.GetComponent<Text>().text = slider.value.ToString();
-        }
+        GameObject selected = script.holder.Find(script.dropdown.options[script.dropdownvalue].text).gameObject;
+        Vector3 scale = selected.transform.localScale;
+        selected.transform.localScale = new Vector3(scale.x, scale.y, slider.value);
+        GameObject value = slider.transform.Find("Value").gameObject;
+        value.GetComponent<Text>().text = slider.value.ToString();       
     }
 
 }

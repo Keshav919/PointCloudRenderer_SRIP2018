@@ -39,11 +39,11 @@ namespace Controllers {
         /// </summary>
         public uint cacheSizeInPoints = 1000000;
 
-        private Camera userCamera;
+        public Camera userCamera;
 
         // Use this for initialization
         protected override void Initialize() {
-            userCamera = Camera.main;
+            //userCamera = Camera.main;
             PointRenderer = new V2Renderer(minNodeSize, pointBudget, nodesLoadedPerFrame, nodesGOsPerFrame, userCamera, meshConfiguration, cacheSizeInPoints);
         }
         

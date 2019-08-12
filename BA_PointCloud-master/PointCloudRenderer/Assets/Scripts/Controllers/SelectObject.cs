@@ -10,9 +10,7 @@ using UnityEngine.UI;
 public class SelectObject : MonoBehaviour {
 
     public List<string> cloud;
-    public bool chosen = true;
     public Transform holder;
-    public bool reload = true;
     public int count = 0;
     public Dropdown dropdown;
     public int dropdownvalue;
@@ -41,6 +39,10 @@ public class SelectObject : MonoBehaviour {
         var save = selected.GetComponent<SaveController>();
         if (!save.saved)
         {
+            //if (CloudsFromDirectoryLoader.boxlist[gameObject.name] != new Vector3(0, 0, 0) && gameObject.transform.eulerAngles != new Vector3(0,0,0))
+           // {
+//save.Overwrite = true;
+           // }
             save.SaveEnabled = true;
         }
         return;

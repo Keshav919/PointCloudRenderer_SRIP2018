@@ -60,16 +60,22 @@ namespace CloudData {
         /// </summary>
         /// <param name="configuration">The MeshConfiguration which should be used for creating the Game Objects</param>
         public void CreateGameObjects(MeshConfiguration configuration) {
+            //var script = GameObject.FindGameObjectWithTag("MeshConfig").GetComponent<GeoQuadMeshConfiguration>();
+            //if (script.holdername.Contains(metaData.cloudName))
+            //{
             int max = configuration.GetMaximumPointsPerMesh();
-            
-            if (verticesToStore.Length <= max) {
+            if (verticesToStore.Length <= max)
+            {
                 gameObjects.Add(configuration.CreateGameObject(metaData.cloudName + "/" + "r" + name + " (" + verticesToStore.Length + ")", verticesToStore, colorsToStore, boundingBox));
-            } else {
+            }
+            else
+            {
                 int amount = Math.Min(max, verticesToStore.Length);
                 int index = 0; //name index
                 Vector3[] restVertices = verticesToStore;
                 Color[] restColors = colorsToStore;
-                while (amount > 0) {
+                while (amount > 0)
+                {
                     Vector3[] vertices = restVertices.Take(amount).ToArray();
                     Color[] colors = restColors.Take(amount).ToArray(); ;
                     restVertices = restVertices.Skip(amount).ToArray();
@@ -79,6 +85,7 @@ namespace CloudData {
                     index++;
                 }
             }
+            //}
         }
         
          /// <summary>
@@ -113,10 +120,15 @@ namespace CloudData {
         /// </summary>
         /// <param name="config">The MeshConfiguration which should be used for removing the Game Objects</param>
         public void RemoveGameObjects(MeshConfiguration config) {
-            foreach (GameObject go in gameObjects) {
+            /*var script = GameObject.FindGameObjectWithTag("MeshConfig").GetComponent<GeoQuadMeshConfiguration>();
+            if (script.holdername.Contains(metaData.cloudName))
+            {*/
+            foreach (GameObject go in gameObjects)
+            {
                 config.RemoveGameObject(go);
             }
             gameObjects.Clear();
+            
         }
 
         /// <summary>

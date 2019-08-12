@@ -91,14 +91,13 @@ namespace ObjectCreation
 
         public List<GameObject> holders;
 
+        //public List<string> holdername;
+
 
 
         public Material[] Newmat;
 
         public static Dictionary<string, List<string>> rotatelist = new Dictionary<string, List<string>>();
-        //public Vector3[] rotatepoints;
-
-        //public GameObject Cloudholder;
 
 
         public GameObject subholder;
@@ -182,6 +181,7 @@ namespace ObjectCreation
             foreach (Transform child in ts)
             {
                 holders.Add(child.gameObject);
+                //holdername.Add(child.gameObject.name);
             }
         }
 
@@ -241,11 +241,11 @@ namespace ObjectCreation
             renderer.material = material;
 
             //Create a highlight
-            if (gameObject.GetComponentInParent<DrawOutline>().reloaded == true)
+            /*if (gameObject.GetComponentInParent<DrawOutline>().reloaded == true)
             {
                 Newmat[0] = renderer.material;
                 renderer.materials = Newmat;
-            }
+            }*/
 
             int[] indecies = new int[vertexData.Length];
             for (int i = 0; i < vertexData.Length; ++i)
@@ -256,13 +256,6 @@ namespace ObjectCreation
             mesh.colors = colorData;
             mesh.SetIndices(indecies, MeshTopology.Points, 0);
             subholder = GetHolder(name);
-            //Set Translation
-            //boundingBox.UpdateBox(gameObject.transform.parent.GetComponent<CloudOffset>().offset);
-            //Vector3 temp = boxlist[subholder.name];
-            //Quaternion rotation = Quaternion.Euler(temp.x, temp.y, temp.z);
-            //Matrix4x4 m = Matrix4x4.Rotate(rotation);
-            //Vector3 newmin = m.MultiplyPoint3x4(boundingBox.Min().ToFloatVector());
-            //gameObject.transform.Translate(newmin);
             Vector3 temps = CloudsFromDirectoryLoader.boxoffset[subholder.name];
             gameObject.transform.Translate(-1 * new Vector3(temps.x, temps.z, temps.y));
             List<string> existing = new List<string>();
@@ -298,7 +291,6 @@ namespace ObjectCreation
             offset = GetOffsets(subholder);
             rotate = GetRotation(subholder);
             gameObject.transform.Translate(offset);
-            //gameObject.transform.localPosition -= new Vector3(5, 0, 0);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.forward, rotate.z);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.right, rotate.x);
             gameObject.transform.RotateAround(subholder.transform.position, Vector3.up, rotate.y);
