@@ -14,7 +14,7 @@ public class OVRController_Advanced : MonoBehaviour {
     private GameObject player;
 
     //default speed of player
-    public static float speed = 1;
+    public float speed = 1;
 
     //orientation of the cloud
     private Vector3 rot;
@@ -43,7 +43,6 @@ public class OVRController_Advanced : MonoBehaviour {
     void Update()
     {
 
-        //take the key input from user
         movehorizontal = Input.GetKey(KeyCode.A) || OVRInput.Get(OVRInput.Button.DpadLeft) ? -1 :
             Input.GetKey(KeyCode.D) || OVRInput.Get(OVRInput.Button.DpadRight) ? 1 : 0;
         movevertical = Input.GetKey(KeyCode.S) || OVRInput.Get(OVRInput.Button.DpadDown) ? -1 :
@@ -51,8 +50,8 @@ public class OVRController_Advanced : MonoBehaviour {
         moveup = Input.GetKey(KeyCode.Q) || OVRInput.Get(OVRInput.Button.PrimaryShoulder) ? 1 :
             Input.GetKey(KeyCode.E) || OVRInput.Get(OVRInput.Button.SecondaryShoulder) ? -1 : 0;
 
-        
-        
+
+
 
         //find direction of camera
         Vector3 front = maincamera.transform.forward;

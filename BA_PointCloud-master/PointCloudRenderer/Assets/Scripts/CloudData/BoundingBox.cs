@@ -284,6 +284,7 @@ namespace CloudData {
             if (nlx != lx)
             {
                 MoveAlong(new Vector3d(vector));
+                bounds = new Bounds(Center().ToFloatVector(), Size().ToFloatVector());
             }
         }
     }

@@ -1,9 +1,11 @@
 ﻿using CloudData;
+using Controllers;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using UnityEngine;
+using ObjectCreation;
 
 
 namespace Loading {
@@ -11,6 +13,8 @@ namespace Loading {
     /// Provides methods for loading point clouds from the file system
     /// </summary>
     class CloudLoader {
+
+
         /* Loads the metadata from the json-file in the given cloudpath
          */
         /// <summary>
@@ -19,7 +23,9 @@ namespace Loading {
         /// <param name="cloudPath">Folderpath of the cloud</param>
         /// <param name="moveToOrigin">True, if the center of the cloud should be moved to the origin</param>
         public static Node currentNode;
+
         
+
         public static PointCloudMetaData LoadMetaData(string cloudPath, bool moveToOrigin = false) {
             string jsonfile;
             using (StreamReader reader = new StreamReader(cloudPath + "cloud.js", Encoding.Default)) {
@@ -40,6 +46,7 @@ namespace Loading {
         public static Node LoadPointCloud(PointCloudMetaData metaData) {
             string dataRPath = metaData.cloudPath + metaData.octreeDir + "\\r\\";
             Node rootNode = new Node("", metaData, metaData.boundingBox, null);
+            Debug.Log(metaData.RotateX);
             LoadHierarchy(dataRPath, metaData, rootNode);
             LoadAllPoints(dataRPath, metaData, rootNode);
             return rootNode;
@@ -56,6 +63,7 @@ namespace Loading {
             LoadHierarchy(dataRPath, metaData, rootNode);
             return rootNode;
         }
+
 
         /// <summary>
         /// Loads the points for the given node
@@ -127,6 +135,14 @@ namespace Loading {
             } else {
                 max.x -= size.x / 2;
             }
+            /*
+            Quaternion rotation = Quaternion.Euler(45, 0, 0);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            Vector3 tempmin = m.MultiplyPoint3x4(min.ToFloatVector());
+            Vector3 tempmax = m.MultiplyPoint3x4(max.ToFloatVector());
+            min = ToVector3d(tempmin);
+            max = ToVector3d(tempmax);*/
+
             return new BoundingBox(min, max);
         }
 
@@ -163,6 +179,16 @@ namespace Loading {
                     offset += 3;
                 }
             }
+            
+            Quaternion rotation = Quaternion.Euler(CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].x, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].y, CloudsFromDirectoryLoader.boxlist[node.MetaData.cloudName].z);
+            Matrix4x4 m = Matrix4x4.Rotate(rotation);
+            int a = 0;
+            while (a < vertices.Length)
+            {
+                vertices[a] = Vector3.Scale(vertices[a], CloudsFromDirectoryLoader.boxscale[node.MetaData.cloudName]);
+                vertices[a] = m.MultiplyPoint3x4(vertices[a]);
+                a++;
+            }
             node.SetPoints(vertices, colors);
         }
 
@@ -181,15 +207,31 @@ namespace Loading {
             return File.ReadAllBytes(dataRPath + path);
         }
 
+
+        private static Vector3d ToVector3d(Vector3 vector)
+        {
+            Vector3d newvector = new Vector3d(0, 0, 0);
+            double x = vector.x;
+            double y = vector.y;
+            double z = vector.z;
+            newvector.x = x;
+            newvector.y = y;
+            newvector.z = z;
+            return newvector;
+        }
         /* Loads the points for that node and all its children
          */
-        private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node) {
+        private static void LoadAllPoints(string dataRPath, PointCloudMetaData metaData, Node node)
+        {
             LoadPoints(dataRPath, metaData, node);
-            for (int i = 0; i < 8; i++) {
-                if (node.HasChild(i)) {
+            for (int i = 0; i < 8; i++)
+            {
+                if (node.HasChild(i))
+                {
                     LoadAllPoints(dataRPath, metaData, node.GetChild(i));
                 }
             }
         }
+
     }
 }
